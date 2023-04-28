@@ -71,7 +71,7 @@ static virtual_timer_t keyboard_idle_timer;
 
 static void keyboard_idle_timer_cb(struct ch_virtual_timer *, void *arg);
 
-report_keyboard_t keyboard_report_sent = {{0}};
+report_keyboard_t keyboard_report_sent = {0, {0}, {0}};
 report_mouse_t    mouse_report_sent    = {0};
 
 union {
@@ -626,7 +626,7 @@ static bool usb_request_hook_cb(USBDriver *usbp) {
                         switch (usbp->setup[4]) { /* LSB(wIndex) (check MSB==0?) */
 #ifndef KEYBOARD_SHARED_EP
                             case KEYBOARD_INTERFACE:
-                                usbSetupTransfer(usbp, (uint8_t *)&keyboard_report_sent, KEYBOARD_REPORT_SIZE, NULL);
+                                usbSetupTransfer(usbp, (uint8_t *)&keyboard_report_sent.std, KEYBOARD_REPORT_SIZE, NULL);
                                 return TRUE;
                                 break;
 #endif
@@ -640,7 +640,7 @@ static bool usb_request_hook_cb(USBDriver *usbp) {
                             case SHARED_INTERFACE:
 #    ifdef KEYBOARD_SHARED_EP
                                 if (usbp->setup[2] == REPORT_ID_KEYBOARD) {
-                                    usbSetupTransfer(usbp, (uint8_t *)&keyboard_report_sent, KEYBOARD_REPORT_SIZE, NULL);
+                                    usbSetupTransfer(usbp, (uint8_t *)&keyboard_report_sent.std, KEYBOARD_REPORT_SIZE, NULL);
                                     return TRUE;
                                     break;
                                 }
@@ -883,21 +883,20 @@ void send_report(uint8_t endpoint, void *report, size_t size) {
 /* prepare and start sending a report IN
  * not callable from ISR or locked state */
 void send_keyboard(report_keyboard_t *report) {
-    uint8_t ep   = KEYBOARD_IN_EPNUM;
-    size_t  size = KEYBOARD_REPORT_SIZE;
-
     /* If we're in Boot Protocol, don't send any report ID or other funky fields */
     if (!keyboard_protocol) {
-        send_report(ep, &report->mods, 8);
+        send_report(KEYBOARD_IN_EPNUM, &report->std.mods, 8);
     } else {
+        if (report->changed & KB_RPT_STD) {
+            send_report(KEYBOARD_IN_EPNUM, &report->std.mods, KEYBOARD_REPORT_SIZE);
+            report->changed &= ~KB_RPT_STD;
+        }
 #ifdef NKRO_ENABLE
-        if (keymap_config.nkro) {
-            ep   = SHARED_IN_EPNUM;
-            size = sizeof(struct nkro_report);
+        if (report->changed & KB_RPT_NKRO) {
+            send_report(SHARED_IN_EPNUM, &report->nkro, sizeof(struct nkro_report));
+            report->changed &= ~KB_RPT_NKRO;
         }
 #endif
-
-        send_report(ep, report, size);
     }
 
     keyboard_report_sent = *report;

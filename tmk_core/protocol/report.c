@@ -37,8 +37,8 @@ static int8_t cb_count = 0;
  */
 uint8_t has_anykey(report_keyboard_t* keyboard_report) {
     uint8_t  cnt = 0;
-    uint8_t* p   = keyboard_report->keys;
-    uint8_t  lp  = sizeof(keyboard_report->keys);
+    uint8_t* p   = keyboard_report->std.keys;
+    uint8_t  lp  = sizeof(keyboard_report->std.keys);
 #ifdef NKRO_ENABLE
     if (keyboard_protocol && keymap_config.nkro) {
         p  = keyboard_report->nkro.bits;
@@ -67,14 +67,14 @@ uint8_t get_first_key(report_keyboard_t* keyboard_report) {
 #ifdef RING_BUFFERED_6KRO_REPORT_ENABLE
     uint8_t i = cb_head;
     do {
-        if (keyboard_report->keys[i] != 0) {
+        if (keyboard_report->std.keys[i] != 0) {
             break;
         }
         i = RO_INC(i);
     } while (i != cb_tail);
-    return keyboard_report->keys[i];
+    return keyboard_report->std.keys[i];
 #else
-    return keyboard_report->keys[0];
+    return keyboard_report->std.keys[0];
 #endif
 }
 
@@ -97,7 +97,7 @@ bool is_key_pressed(report_keyboard_t* keyboard_report, uint8_t key) {
     }
 #endif
     for (int i = 0; i < KEYBOARD_REPORT_KEYS; i++) {
-        if (keyboard_report->keys[i] == key) {
+        if (keyboard_report->std.keys[i] == key) {
             return true;
         }
     }
@@ -114,10 +114,10 @@ void add_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
     int8_t empty = -1;
     if (cb_count) {
         do {
-            if (keyboard_report->keys[i] == code) {
+            if (keyboard_report->std.keys[i] == code) {
                 return;
             }
-            if (empty == -1 && keyboard_report->keys[i] == 0) {
+            if (empty == -1 && keyboard_report->std.keys[i] == 0) {
                 empty = i;
             }
             i = RO_INC(i);
@@ -134,9 +134,9 @@ void add_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
                     uint8_t offset = 1;
                     i              = RO_INC(empty);
                     do {
-                        if (keyboard_report->keys[i] != 0) {
-                            keyboard_report->keys[empty] = keyboard_report->keys[i];
-                            keyboard_report->keys[i]     = 0;
+                        if (keyboard_report->std.keys[i] != 0) {
+                            keyboard_report->std.keys[empty] = keyboard_report->std.keys[i];
+                            keyboard_report->std.keys[i]     = 0;
                             empty                        = RO_INC(empty);
                         } else {
                             offset++;
@@ -149,23 +149,24 @@ void add_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
         }
     }
     // add to tail
-    keyboard_report->keys[cb_tail] = code;
+    keyboard_report->std.keys[cb_tail] = code;
     cb_tail                        = RO_INC(cb_tail);
     cb_count++;
 #else
     int8_t i     = 0;
     int8_t empty = -1;
     for (; i < KEYBOARD_REPORT_KEYS; i++) {
-        if (keyboard_report->keys[i] == code) {
+        if (keyboard_report->std.keys[i] == code) {
             break;
         }
-        if (empty == -1 && keyboard_report->keys[i] == 0) {
+        if (empty == -1 && keyboard_report->std.keys[i] == 0) {
             empty = i;
         }
     }
     if (i == KEYBOARD_REPORT_KEYS) {
         if (empty != -1) {
-            keyboard_report->keys[empty] = code;
+            keyboard_report->std.keys[empty] = code;
+            keyboard_report->changed |= KB_RPT_STD;
         }
     }
 #endif
@@ -180,8 +181,8 @@ void del_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
     uint8_t i = cb_head;
     if (cb_count) {
         do {
-            if (keyboard_report->keys[i] == code) {
-                keyboard_report->keys[i] = 0;
+            if (keyboard_report->std.keys[i] == code) {
+                keyboard_report->std.keys[i] = 0;
                 cb_count--;
                 if (cb_count == 0) {
                     // reset head and tail
@@ -191,7 +192,7 @@ void del_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
                     // left shift when next to tail
                     do {
                         cb_tail = RO_DEC(cb_tail);
-                        if (keyboard_report->keys[RO_DEC(cb_tail)] != 0) {
+                        if (keyboard_report->std.keys[RO_DEC(cb_tail)] != 0) {
                             break;
                         }
                     } while (cb_tail != cb_head);
@@ -203,8 +204,9 @@ void del_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
     }
 #else
     for (uint8_t i = 0; i < KEYBOARD_REPORT_KEYS; i++) {
-        if (keyboard_report->keys[i] == code) {
-            keyboard_report->keys[i] = 0;
+        if (keyboard_report->std.keys[i] == code) {
+            keyboard_report->std.keys[i] = 0;
+            keyboard_report->changed |= KB_RPT_STD;
         }
     }
 #endif
@@ -218,6 +220,7 @@ void del_key_byte(report_keyboard_t* keyboard_report, uint8_t code) {
 void add_key_bit(report_keyboard_t* keyboard_report, uint8_t code) {
     if ((code >> 3) < KEYBOARD_REPORT_BITS) {
         keyboard_report->nkro.bits[code >> 3] |= 1 << (code & 7);
+        keyboard_report->changed |= KB_RPT_NKRO;
     } else {
         dprintf("add_key_bit: can't add: %02X\n", code);
     }
@@ -230,6 +233,7 @@ void add_key_bit(report_keyboard_t* keyboard_report, uint8_t code) {
 void del_key_bit(report_keyboard_t* keyboard_report, uint8_t code) {
     if ((code >> 3) < KEYBOARD_REPORT_BITS) {
         keyboard_report->nkro.bits[code >> 3] &= ~(1 << (code & 7));
+        keyboard_report->changed |= KB_RPT_NKRO;
     } else {
         dprintf("del_key_bit: can't del: %02X\n", code);
     }
@@ -241,13 +245,12 @@ void del_key_bit(report_keyboard_t* keyboard_report, uint8_t code) {
  * FIXME: Needs doc
  */
 void add_key_to_report(report_keyboard_t* keyboard_report, uint8_t key) {
+    add_key_byte(keyboard_report, key);
 #ifdef NKRO_ENABLE
-    if (keyboard_protocol && keymap_config.nkro) {
+    if (keyboard_protocol && keymap_config.nkro && (keyboard_report->changed & KB_RPT_STD) == 0) {
         add_key_bit(keyboard_report, key);
-        return;
     }
 #endif
-    add_key_byte(keyboard_report, key);
 }
 
 /** \brief del key from report
@@ -255,13 +258,13 @@ void add_key_to_report(report_keyboard_t* keyboard_report, uint8_t key) {
  * FIXME: Needs doc
  */
 void del_key_from_report(report_keyboard_t* keyboard_report, uint8_t key) {
+    del_key_byte(keyboard_report, key);
 #ifdef NKRO_ENABLE
-    if (keyboard_protocol && keymap_config.nkro) {
+    if (keyboard_protocol && keymap_config.nkro && (keyboard_report->changed & KB_RPT_STD) == 0) {
         del_key_bit(keyboard_report, key);
         return;
     }
 #endif
-    del_key_byte(keyboard_report, key);
 }
 
 /** \brief clear key from report
@@ -270,13 +273,13 @@ void del_key_from_report(report_keyboard_t* keyboard_report, uint8_t key) {
  */
 void clear_keys_from_report(report_keyboard_t* keyboard_report) {
     // not clear mods
+    memset(keyboard_report->std.keys, 0, sizeof(keyboard_report->std.keys));
 #ifdef NKRO_ENABLE
     if (keyboard_protocol && keymap_config.nkro) {
         memset(keyboard_report->nkro.bits, 0, sizeof(keyboard_report->nkro.bits));
-        return;
     }
 #endif
-    memset(keyboard_report->keys, 0, sizeof(keyboard_report->keys));
+    keyboard_report->changed = KB_RPT_STD | KB_RPT_NKRO;
 }
 
 #ifdef MOUSE_ENABLE

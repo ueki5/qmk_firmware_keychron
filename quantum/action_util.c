@@ -245,8 +245,8 @@ bool is_oneshot_enabled(void) {
  * FIXME: needs doc
  */
 void send_keyboard_report(void) {
-    keyboard_report->mods = real_mods;
-    keyboard_report->mods |= weak_mods;
+    keyboard_report->std.mods = real_mods;
+    keyboard_report->std.mods |= weak_mods;
 
 #ifndef NO_ACTION_ONESHOT
     if (oneshot_mods) {
@@ -256,7 +256,7 @@ void send_keyboard_report(void) {
             clear_oneshot_mods();
         }
 #    endif
-        keyboard_report->mods |= oneshot_mods;
+        keyboard_report->std.mods |= oneshot_mods;
         if (has_anykey(keyboard_report)) {
             clear_oneshot_mods();
         }
@@ -266,14 +266,17 @@ void send_keyboard_report(void) {
 
 #ifdef KEY_OVERRIDE_ENABLE
     // These need to be last to be able to properly control key overrides
-    keyboard_report->mods &= ~suppressed_mods;
-    keyboard_report->mods |= weak_override_mods;
+    keyboard_report->std.mods &= ~suppressed_mods;
+    keyboard_report->std.mods |= weak_override_mods;
 #endif
 
 #ifdef PROTOCOL_VUSB
     host_keyboard_send(keyboard_report);
 #else
-    static report_keyboard_t last_report;
+    static report_keyboard_t last_report = {0, {0}, {0}};
+
+    if (last_report.std.mods != keyboard_report->std.mods)
+        keyboard_report->changed |= KB_RPT_STD;
 
     /* Only send the report if there are changes to propagate to the host. */
     if (memcmp(keyboard_report, &last_report, sizeof(report_keyboard_t)) != 0) {

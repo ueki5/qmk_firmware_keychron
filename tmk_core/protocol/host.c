@@ -86,7 +86,6 @@ void host_keyboard_send(report_keyboard_t *report) {
         /* The callers of this function assume that report->mods is where mods go in.
          * But report->nkro.mods can be at a different offset if core keyboard does not have a report ID.
          */
-        report->nkro.mods      = report->mods;
         report->nkro.report_id = REPORT_ID_NKRO;
     } else
 #endif

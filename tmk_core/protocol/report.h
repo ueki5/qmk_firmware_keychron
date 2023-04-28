@@ -35,6 +35,13 @@ enum hid_report_ids {
     REPORT_ID_DIGITIZER
 };
 
+/* Keyboard report type */
+#define KB_RPT_MASK(n) (1 << (n))
+enum kb_reports {
+    KB_RPT_STD = KB_RPT_MASK(0),
+    KB_RPT_NKRO = KB_RPT_MASK(1)
+};
+
 /* Mouse buttons */
 #define MOUSE_BTN_MASK(n) (1 << (n))
 enum mouse_buttons {
@@ -172,8 +179,8 @@ extern "C" {
  * desc |Lcontrol|Lshift  |Lalt    |Lgui    |Rcontrol|Rshift  |Ralt    |Rgui
  *
  */
-typedef union {
-    uint8_t raw[KEYBOARD_REPORT_SIZE];
+typedef struct {
+    uint8_t changed;
     struct {
 #ifdef KEYBOARD_SHARED_EP
         uint8_t report_id;
@@ -181,7 +188,7 @@ typedef union {
         uint8_t mods;
         uint8_t reserved;
         uint8_t keys[KEYBOARD_REPORT_KEYS];
-    };
+    } std;
 #ifdef NKRO_ENABLE
     struct nkro_report {
 #    ifdef NKRO_SHARED_EP
