@@ -17,7 +17,8 @@
 #pragma once
 
 /* RGB Matrix Configuration */
-#define RGB_MATRIX_LED_COUNT 53
+#define DRIVER_1_LED_TOTAL 54
+#define RGB_MATRIX_LED_COUNT DRIVER_1_LED_TOTAL
 
 /* Encoder Configuration */
 #define ENCODER_DEFAULT_POS 0x3

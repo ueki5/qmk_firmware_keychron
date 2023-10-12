@@ -1,4 +1,4 @@
-/* Copyright 2023 @ Keychron (https://www.keychron.com)
+/* Copyright 2022 @ Keychron (https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 // from keeping the keyboard awake
 // - just mirroring `KC_NO` in the `LAYOUT`
 //   macro to keep it simple
+// clang-format off
 const matrix_row_t matrix_mask[] = {
     0b011111111,
     0b011111111,
@@ -43,60 +44,6 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
     if (index == 0) {
         default_layer_set(1UL << (active ? 0 : 2));
     }
-    return true;
-}
-#endif
-
-#if defined(RGB_MATRIX_ENABLE) && defined(CAPS_LOCK_LED_INDEX)
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_user(keycode, record)) {
-        return false;
-    }
-    switch (keycode) {
-        case RGB_TOG:
-            if (record->event.pressed) {
-                switch (rgb_matrix_get_flags()) {
-                    case LED_FLAG_ALL: {
-                        rgb_matrix_set_flags(LED_FLAG_NONE);
-                        rgb_matrix_set_color_all(0, 0, 0);
-                    } break;
-                    default: {
-                        rgb_matrix_set_flags(LED_FLAG_ALL);
-                    } break;
-                }
-            }
-            if (!rgb_matrix_is_enabled()) {
-                rgb_matrix_set_flags(LED_FLAG_ALL);
-                rgb_matrix_enable();
-            }
-            return false;
-    }
-    return true;
-}
-
-bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
-    if (!rgb_matrix_indicators_advanced_user(led_min, led_max)) {
-        return false;
-    }
-    // RGB_MATRIX_INDICATOR_SET_COLOR(index, red, green, blue);
-#    if defined(CAPS_LOCK_LED_INDEX)
-    if (host_keyboard_led_state().caps_lock) {
-        RGB_MATRIX_INDICATOR_SET_COLOR(CAPS_LOCK_LED_INDEX, 255, 255, 255);
-    } else {
-        if (!rgb_matrix_get_flags()) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(CAPS_LOCK_LED_INDEX, 0, 0, 0);
-        }
-    }
-#    endif // CAPS_LOCK_LED_INDEX
-#    if defined(NUM_LOCK_LED_INDEX)
-    if (host_keyboard_led_state().num_lock) {
-        RGB_MATRIX_INDICATOR_SET_COLOR(NUM_LOCK_LED_INDEX, 255, 255, 255);
-    } else {
-        if (!rgb_matrix_get_flags()) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(NUM_LOCK_LED_INDEX, 0, 0, 0);
-        }
-    }
-#    endif // NUM_LOCK_LED_INDEX
     return true;
 }
 #endif
@@ -139,15 +86,24 @@ static int16_t analogReadPin_my(pin_t pin) {
     return *sampleBuffer;
 }
 
+#if defined(ENCODER_ENABLE) && defined(PAL_USE_CALLBACKS)
+static void encoder_pad_cb(void *param) {
+    encoder_inerrupt_read((uint32_t)param & 0XFF);
+}
+#endif
+
 void keyboard_post_init_kb(void) {
-    // 1. The pin A5/B5 of the USB C interface in the left hand is connected to the pin A0 of MCU,
-    // A0 will be set to output and write high when keyboard initial.
-    // 2. The same pin in the right hand is connected to the pin B0 and B1 of MCU respectively,
-    // and the ADC function of B0 and B1 will be enabled when keyboard initial.
-    // 3. because the serial usart RXD and TXD is multiplexed on USB's D+ and D- in the right hand.
-    // So detect the voltage on the pin A5/B5 of the USB C interface by ADC,
-    // and disable USB connectivity when the ADC value exceeds 1000,
-    // to avoid affecting the serial usart communication between the left hand and the right hand.
+#if defined(ENCODER_ENABLE) && defined(PAL_USE_CALLBACKS)
+
+    pin_t encoders_pad_a[NUM_ENCODERS] = ENCODERS_PAD_A;
+    pin_t encoders_pad_b[NUM_ENCODERS] = ENCODERS_PAD_B;
+    for (uint32_t i = 0; i < NUM_ENCODERS; i++) {
+        palEnableLineEvent(encoders_pad_a[i], PAL_EVENT_MODE_BOTH_EDGES);
+        palEnableLineEvent(encoders_pad_b[i], PAL_EVENT_MODE_BOTH_EDGES);
+        palSetLineCallback(encoders_pad_a[i], encoder_pad_cb, (void *)i);
+        palSetLineCallback(encoders_pad_b[i], encoder_pad_cb, (void *)i);
+    }
+#endif
     if (is_keyboard_left()) {
         setPinOutput(A0);
         writePinHigh(A0);
@@ -158,5 +114,6 @@ void keyboard_post_init_kb(void) {
         }
     }
 
+    // allow user keymaps to do custom post_init
     keyboard_post_init_user();
 }

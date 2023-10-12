@@ -1,4 +1,4 @@
-/* Copyright 2021 @ Keychron (https://www.keychron.com)
+/* Copyright 2022 @ Keychron (https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
 #define DRIVER_1_LED_TOTAL 46
 #define DRIVER_2_LED_TOTAL 40
 #define RGB_MATRIX_LED_COUNT (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
-
-#define CKLED2001_CURRENT_TUNE \
-    { 0xA0, 0xA0, 0x4D, 0xA0, 0xA0, 0x4D, 0xA0, 0xA0, 0x4D, 0xA0, 0xA0, 0x4D }
 
 /* Encoder Configuration */
 #define ENCODER_DEFAULT_POS 0x3

@@ -16,10 +16,8 @@
 
 #include "quantum.h"
 
-#ifdef LED_MATRIX_ENABLE
-
 // clang-format off
-
+#ifdef LED_MATRIX_ENABLE
 const ckled2001_led PROGMEM g_ckled2001_leds[LED_MATRIX_LED_COUNT] = {
 /* Refer to CKLED2001 manual for these locations
  *   driver
@@ -140,12 +138,11 @@ led_config_t g_led_config = {
     {
         // RGB LED Index to Flag
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1,    1,
+        4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1,    1,
         1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,    1,
         1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,    1,    1,
         1,    4, 4, 4, 4, 4, 4, 4, 4, 4, 4,    1, 1, 1,
-        1, 1, 1,          4,          1, 1, 1, 1, 1, 1,
+        1, 1, 1,          4,          1, 4, 1, 1, 1, 1,
     }
 };
-
-#endif // RGB_MATRIX_ENABLE
+#endif
