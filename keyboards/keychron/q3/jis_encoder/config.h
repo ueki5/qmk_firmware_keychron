@@ -17,12 +17,19 @@
 #pragma once
 
 /* RGB Matrix Configuration */
-#define DRIVER_1_LED_TOTAL 49
-#define DRIVER_2_LED_TOTAL 43
-#define RGB_MATRIX_LED_COUNT (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
-
-/* Encoder Configuration */
-#define ENCODER_DEFAULT_POS 0x3
+#define RGB_MATRIX_LED_COUNT 92
 
 /* Enable CapsLcok LED */
 #define CAPS_LOCK_LED_INDEX 51
+
+/* Encoder Configuration*/
+#ifdef ENCODER_ENABLE
+#    define ENCODER_DEFAULT_POS 0x3
+#endif
+
+/* HC595 Driver Configuration */
+#define HC595_STCP B0
+#define HC595_SHCP B1
+#define HC595_DS A7
+#define HC595_START_INDEX 8
+#define HC595_END_INDEX 15

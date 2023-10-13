@@ -1,4 +1,4 @@
-/* Copyright 2022 @ Keychron (https://www.keychron.com)
+/* Copyright 2021 @ Keychron (https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 #define DRIVER_2_LED_TOTAL 45
 #define RGB_MATRIX_LED_COUNT (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
 
-/* Enable caps-lock LED */
-#define CAPS_LOCK_LED_INDEX 55
-
-/* Enable num-lock LED */
-#define NUM_LOCK_LED_INDEX 33
+/* Indication Led Index */
+#define CAPS_LOCK_INDEX 55
+#define NUM_LOCK_INDEX 33

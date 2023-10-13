@@ -1,4 +1,4 @@
-/* Copyright 2020 QMK
+/* Copyright 2023 @ Keychron(https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,9 @@
  */
 
 #pragma once
+
+/* RGB Matrix Configuration */
+#define RGB_MATRIX_LED_COUNT 89
 
 /* Enable caps-lock LED */
 #define CAPS_LOCK_LED_INDEX 23

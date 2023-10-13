@@ -33,19 +33,18 @@
 
 /* Scan phase of led driver set as MSKPHASE_9CHANNEL(defined as 0x03 in CKLED2001.h) */
 #define PHASE_CHANNEL MSKPHASE_9CHANNEL
-/* Set LED driver current */
-#define CKLED2001_CURRENT_TUNE \
-    { 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60 }
+#define CKLED2001_CURRENT_TUNE { 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60, 0xC4, 0xC4, 0x60 }
 
 /* DIP switch */
-#define DIP_SWITCH_MATRIX_GRID { { 4, 4 } }
-#define SCAN_COUNT_MAX 100
+#define DIP_SWITCH_MATRIX_GRID  { {4, 4} }
 
 /* Disable DIP switch in matrix data */
 #define MATRIX_MASKED
 
 /* Turn off effects when suspended */
 #define RGB_DISABLE_WHEN_USB_SUSPENDED
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 /* EEPROM Driver Configuration */
 #define WEAR_LEVELING_LOGICAL_SIZE 2048
@@ -83,13 +82,9 @@
 #define ENABLE_RGB_MATRIX_PIXEL_RAIN
 // #define ENABLE_RGB_MATRIX_PIXEL_FLOW
 // #define ENABLE_RGB_MATRIX_PIXEL_FRACTAL
-
-#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 // enabled only if RGB_MATRIX_FRAMEBUFFER_EFFECTS is defined
 #define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #define ENABLE_RGB_MATRIX_DIGITAL_RAIN
-
-#define RGB_MATRIX_KEYPRESSES
 // enabled only of RGB_MATRIX_KEYPRESSES or RGB_MATRIX_KEYRELEASES is defined
 #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE
@@ -104,6 +99,5 @@
 #define ENABLE_RGB_MATRIX_SOLID_SPLASH
 // #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-/* Factory test keys */
-#define FN_KEY1 MO(2)
-#define FN_KEY2 MO(3)
+#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
+#define RGB_MATRIX_KEYPRESSES

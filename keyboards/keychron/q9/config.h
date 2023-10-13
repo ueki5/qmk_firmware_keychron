@@ -1,4 +1,4 @@
-/* Copyright 2 @ Keychron (https://www.keychron.com)
+/* Copyright 2021 @ Keychron (https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 /* DIP switch */
 #define DIP_SWITCH_MATRIX_GRID { { 3, 4 } }
-#define SCAN_COUNT_MAX 100
 
 /* RGB Matrix Driver Configuration */
 #define DRIVER_COUNT 1
@@ -34,12 +33,13 @@
 #define I2C1_TIMINGR_SCLH 15U
 #define I2C1_TIMINGR_SCLL 51U
 
-/* Set LED driver current */
 #define CKLED2001_CURRENT_TUNE \
     { 0xF8, 0xF8, 0x70, 0xF8, 0xF8, 0x70, 0xF8, 0xF8, 0x70, 0xF8, 0xF8, 0x70 }
 
 /* turn off effects when suspended */
 #define RGB_DISABLE_WHEN_USB_SUSPENDED
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 /* EEPROM Driver Configuration */
 #define WEAR_LEVELING_LOGICAL_SIZE 2048
@@ -77,13 +77,9 @@
 #define ENABLE_RGB_MATRIX_PIXEL_RAIN
 // #define ENABLE_RGB_MATRIX_PIXEL_FLOW
 // #define ENABLE_RGB_MATRIX_PIXEL_FRACTAL
-
-#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 // enabled only if RGB_MATRIX_FRAMEBUFFER_EFFECTS is defined
 #define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #define ENABLE_RGB_MATRIX_DIGITAL_RAIN
-
-#define RGB_MATRIX_KEYPRESSES
 // enabled only of RGB_MATRIX_KEYPRESSES or RGB_MATRIX_KEYRELEASES is defined
 #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE
@@ -98,5 +94,5 @@
 #define ENABLE_RGB_MATRIX_SOLID_SPLASH
 // #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
-/* Factory test keys */
-#define FN_KEY1 MO(4)
+#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
+#define RGB_MATRIX_KEYPRESSES

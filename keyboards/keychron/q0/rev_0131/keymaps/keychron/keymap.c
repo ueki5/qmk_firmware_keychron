@@ -18,26 +18,25 @@
 #include "keychron_common.h"
 #include "keychron_ft_common.h"
 
-// clang-format off
-
 enum layers {
-    L0,
-    L1,
+    BASE,
+    FUNC,
     L2,
-    L3
+    L3,
 };
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [L0] = LAYOUT_numpad_6x5(
-        KC_MUTE,  MO(L1), KC_ESC,  KC_BSPC,  KC_TAB,
+    [BASE] = LAYOUT_numpad_6x5(
+        KC_MUTE,   MO(FUNC), KC_ESC,  KC_BSPC,  KC_TAB,
         MC_1,   KC_NUM,   KC_PSLS, KC_PAST,  KC_PMNS,
         MC_2,   KC_P7,    KC_P8,   KC_P9,    KC_PPLS,
         MC_3,   KC_P4,    KC_P5,   KC_P6,
         MC_4,   KC_P1,    KC_P2,   KC_P3,    KC_PENT,
         MC_5,   KC_P0,             KC_PDOT),
 
-    [L1] = LAYOUT_numpad_6x5(
-        RGB_TOG,_______,  KC_MUTE, KC_VOLD,  KC_VOLU,
+    [FUNC] = LAYOUT_numpad_6x5(
+        RGB_TOG,   _______,  KC_MUTE, KC_VOLD,  KC_VOLU,
         MC_1,   RGB_MOD,  RGB_VAI, RGB_HUI,  KC_DEL,
         MC_2,   RGB_RMOD, RGB_VAD, RGB_HUD,  _______,
         MC_3,   RGB_SAI,  RGB_SPI, KC_MPRV,
@@ -50,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______,  _______, _______,  _______,
         _______, _______,  _______, _______,
         _______, _______,  _______, _______,  _______,
-        _______, _______,           _______         ),
+        _______, _______,           _______),
 
     [L3] = LAYOUT_numpad_6x5(
         _______, _______,  _______, _______,   _______,
@@ -58,13 +57,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______,  _______, _______,   _______,
         _______, _______,  _______, _______,
         _______, _______,  _______, _______,   _______,
-        _______, _______,           _______          )
+        _______, _______,           _______)
 };
 
 #if defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
-    [L0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
-    [L1] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [FUNC] = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
     [L2] = { ENCODER_CCW_CW(_______, _______) },
     [L3] = { ENCODER_CCW_CW(_______, _______) }
 };
@@ -81,10 +80,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_keychron(keycode, record)) {
         return false;
     }
-
     if (!process_record_keychron_ft(keycode, record)) {
         return false;
     }
-
     return true;
 }

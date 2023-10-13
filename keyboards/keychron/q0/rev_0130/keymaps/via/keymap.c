@@ -17,42 +17,43 @@
 #include QMK_KEYBOARD_H
 
 enum layers {
-    L0,
-    L1,
-    L2,
-    L3
+    _BASE,
+    _FN1,
+    _RESERVED1,
+    _RESERVED2,
 };
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [L0] = LAYOUT_numpad_6x4(
-        MO(L1),   KC_ESC,  KC_BSPC,   KC_TAB,
+    [_BASE] = LAYOUT_numpad_6x4(
+        MO(_FN1), KC_ESC,  KC_BSPC,   KC_TAB,
         KC_NUM,   KC_PSLS, KC_PAST,   KC_PMNS,
         KC_P7,    KC_P8,   KC_P9,
         KC_P4,    KC_P5,   KC_P6,     KC_PPLS,
         KC_P1,    KC_P2,   KC_P3,
         KC_P0,             KC_PDOT,   KC_PENT),
 
-    [L1] = LAYOUT_numpad_6x4(
-        _______,  KC_MUTE, KC_VOLD,   KC_VOLU,
-        RGB_MOD,  RGB_VAI, RGB_HUI,   KC_DEL,
-        RGB_RMOD, RGB_VAD, RGB_HUD,
-        RGB_SAI,  RGB_SPI, KC_MPRV,   _______,
-        RGB_SAD,  RGB_SPD, KC_MPLY,
-        RGB_TOG,           KC_MNXT,   _______),
+    [_FN1] = LAYOUT_numpad_6x4(
+        _______,    KC_MUTE, KC_VOLD,   KC_VOLU,
+        RGB_MOD,    RGB_VAI, RGB_HUI,   KC_DEL,
+        RGB_RMOD,   RGB_VAD, RGB_HUD,
+        RGB_SAI,    RGB_SPI, KC_MPRV,   _______,
+        RGB_SAD,    RGB_SPD, KC_MPLY,
+        RGB_TOG,             KC_MNXT,   _______),
 
-    [L2] = LAYOUT_numpad_6x4(
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,
-        _______,           _______,   _______),
+    [_RESERVED1] = LAYOUT_numpad_6x4(
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,
+        _______,             _______,   _______),
 
-    [L3] = LAYOUT_numpad_6x4(
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,
-        _______,  _______, _______,   _______,
-        _______,  _______, _______,
-        _______,           _______,   _______)
+    [_RESERVED2] = LAYOUT_numpad_6x4(
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,
+        _______,    _______, _______,   _______,
+        _______,    _______, _______,
+        _______,             _______,   _______)
 };

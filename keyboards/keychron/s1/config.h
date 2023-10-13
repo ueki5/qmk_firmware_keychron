@@ -20,8 +20,7 @@
 #define MATRIX_MASKED
 
 /* DIP switch */
-#define DIP_SWITCH_MATRIX_GRID { { 5, 4 } }
-#define SCAN_COUNT_MAX 100
+#define DIP_SWITCH_MATRIX_GRID  { {5,4} }
 
 /* EEPROM Driver Configuration */
 #define WEAR_LEVELING_LOGICAL_SIZE 2048
@@ -33,7 +32,3 @@
 #define I2C1_TIMINGR_SDADEL 0U
 #define I2C1_TIMINGR_SCLH 15U
 #define I2C1_TIMINGR_SCLL 51U
-
-/* Factory test keys */
-#define FN_KEY1 MO(1)
-#define FN_KEY2 MO(3)

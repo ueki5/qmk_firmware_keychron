@@ -17,15 +17,14 @@
 #pragma once
 
 /* RGB Matrix Configuration */
-#define DRIVER_1_LED_TOTAL 60
-#define DRIVER_2_LED_TOTAL 48
-#define RGB_MATRIX_LED_COUNT (DRIVER_1_LED_TOTAL + DRIVER_2_LED_TOTAL)
+#define RGB_MATRIX_LED_COUNT 108
 
 /* Enable caps-lock LED*/
-#define CAPS_LOCK_LED_INDEX 62
+#define CAPS_LOCK_LED_INDEX 61
 
 /* Enable NUM_LOCK_LED_INDEX */
 #define NUM_LOCK_LED_INDEX 37
 
-#define SHIFT_COL_START 11
-#define SHIFT_COL_END 18
+/* HC595 Driver Configuration */
+#define HC595_START_INDEX 11
+#define HC595_END_INDEX 18

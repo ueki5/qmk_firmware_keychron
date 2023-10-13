@@ -16,18 +16,17 @@
 
 #include QMK_KEYBOARD_H
 
-// clang-format off
-
 enum layers{
     MAC_BASE,
     MAC_FN,
     WIN_BASE,
-    WIN_FN
+    WIN_FN,
 };
 
 #define KC_TASK LGUI(KC_TAB)
 #define KC_FLXP LGUI(KC_E)
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_BASE] = LAYOUT_tkl_f13_ansi(
         KC_ESC,   KC_BRID,  KC_BRIU,  KC_MCTL,  KC_LPAD,  RGB_VAD,  RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,    KC_MUTE,  KC_NO,    KC_NO,    RGB_MOD,
@@ -63,10 +62,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
-    [MAC_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [MAC_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [WIN_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [WIN_FN]   = { ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [MAC_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [MAC_FN]   = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
+    [WIN_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [WIN_FN]   = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI) }
 };
 #endif // ENCODER_MAP_ENABLE

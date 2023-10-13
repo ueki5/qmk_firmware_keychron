@@ -1,20 +1,20 @@
 # Keychron Q9 Plus
 
-![Keychron Q9 Plus]()
+![Keychron Q9 Plus](https://i.imgur.com/Yp9K7Gsh.jpg)
 
 A customizable 40% keyboard.
 
 * Keyboard Maintainer: [Keychron](https://github.com/keychron)
 * Hardware Supported: Keychron Q9 Plus
-* Hardware Availability: []()
+* Hardware Availability:[Keychron Q9 QMK Custom Mechanical Keyboard](https://www.keychron.com/products/keychron-q9-qmk-custom-mechanical-keyboard)
 
 Make example for this keyboard (after setting up your build environment):
 
-    make keychron/q9/ansi_encoder:default
+    make keychron/q9_plus/ansi_encoder:default
 
-Flashing example for this keyboard ([after setting up the bootloadHID flashing environment](https://docs.qmk.fm/#/flashing_bootloadhid))
+Flashing example for this keyboard:
 
-    make keychron/q9/ansi:default:flash
+    make keychron/q9_plus/ansi:default:flash
 
 **Reset Key**: Hold down the key located at *K00*, programmed as *TAB* while plugging in the keyboard.
 
