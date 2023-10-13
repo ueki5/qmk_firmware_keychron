@@ -30,7 +30,14 @@
 #    define BL_TEST_KEY2 KC_HOME
 #endif
 
-// clang-format off
+#ifndef F_RESET_KEY1
+#    define F_RESET_KEY1 KC_J
+#endif
+
+#ifndef F_RESET_KEY2
+#    define F_RESET_KEY2 KC_Z
+#endif
+
 enum {
     OS_SWITCH = 0x01,
 };
@@ -39,7 +46,7 @@ enum {
     FACTORY_TEST_CMD_BACKLIGHT = 0x01,
     FACTORY_TEST_CMD_OS_SWITCH,
     FACTORY_TEST_CMD_JUMP_TO_BL,
-    FACTORY_TEST_CMD_EEPROM_CLEAR
+    FACTORY_TEST_CMD_EEPROM_CLEAR,
 };
 // clang-format on
 
@@ -68,60 +75,60 @@ __attribute__((weak)) bool process_record_keychron_ft(uint16_t keycode, keyrecor
         case FN_KEY2:
 #    endif
             if (record->event.pressed) {
-                key_press_status |= KEY_PRESS_STEP_0;
+                key_press_status |= KEY_PRESS_FN;
             } else {
-                key_press_status &= ~KEY_PRESS_STEP_0;
+                key_press_status &= ~KEY_PRESS_FN;
                 timer_3s_buffer = 0;
             }
             return true;
 #endif
-        case KC_J:
+        case F_RESET_KEY1:
             if (record->event.pressed) {
-                key_press_status |= KEY_PRESS_STEP_1;
+                key_press_status |= KEY_PRESS_J;
                 if (key_press_status == KEY_PRESS_FACTORY_RESET) {
-                    timer_3s_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+                    timer_3s_buffer = timer_read32();
                 }
             } else {
-                key_press_status &= ~KEY_PRESS_STEP_1;
+                key_press_status &= ~KEY_PRESS_J;
                 timer_3s_buffer = 0;
             }
             return true;
-        case KC_Z:
+        case F_RESET_KEY2:
             if (record->event.pressed) {
-                key_press_status |= KEY_PRESS_STEP_2;
+                key_press_status |= KEY_PRESS_Z;
                 if (key_press_status == KEY_PRESS_FACTORY_RESET) {
-                    timer_3s_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+                    timer_3s_buffer = timer_read32();
                 }
             } else {
-                key_press_status &= ~KEY_PRESS_STEP_2;
+                key_press_status &= ~KEY_PRESS_Z;
                 timer_3s_buffer = 0;
             }
             return true;
         case BL_TEST_KEY1:
             if (record->event.pressed) {
-                key_press_status |= KEY_PRESS_STEP_3;
+                key_press_status |= KEY_PRESS_HOME;
                 if (led_test_mode) {
                     if (++led_test_mode >= LED_TEST_MODE_MAX) {
                         led_test_mode = LED_TEST_MODE_WHITE;
                     }
                 } else if (key_press_status == KEY_PRESS_LED_TEST) {
-                    timer_3s_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+                    timer_3s_buffer = timer_read32();
                 }
             } else {
-                key_press_status &= ~KEY_PRESS_STEP_3;
+                key_press_status &= ~KEY_PRESS_HOME;
                 timer_3s_buffer = 0;
             }
             return true;
         case BL_TEST_KEY2:
             if (record->event.pressed) {
-                key_press_status |= KEY_PRESS_STEP_4;
+                key_press_status |= KEY_PRESS_RIGHT;
                 if (led_test_mode) {
                     led_test_mode = LED_TEST_MODE_OFF;
                 } else if (key_press_status == KEY_PRESS_LED_TEST) {
-                    timer_3s_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+                    timer_3s_buffer = timer_read32();
                 }
             } else {
-                key_press_status &= ~KEY_PRESS_STEP_4;
+                key_press_status &= ~KEY_PRESS_RIGHT;
                 timer_3s_buffer = 0;
             }
             return true;
@@ -131,9 +138,13 @@ __attribute__((weak)) bool process_record_keychron_ft(uint16_t keycode, keyrecor
 }
 
 static void factory_reset(void) {
-    timer_300ms_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+    timer_300ms_buffer = timer_read32();
     factory_reset_count++;
+#ifdef KEYBOARD_keychron_c3_pro_ansi_white
+    layer_state_t default_layer = 1 << 2;
+#else
     layer_state_t default_layer = default_layer_state;
+#endif
     eeconfig_init();
     default_layer_set(default_layer);
     led_test_mode = LED_TEST_MODE_OFF;
@@ -157,7 +168,7 @@ static void factory_reset(void) {
 }
 
 static void timer_3s_task(void) {
-    if (sync_timer_elapsed32(timer_3s_buffer) > 3000) {
+    if (timer_elapsed32(timer_3s_buffer) > 3000) {
         timer_3s_buffer = 0;
         if (key_press_status == KEY_PRESS_FACTORY_RESET) {
             factory_reset();
@@ -182,7 +193,7 @@ static void timer_3s_task(void) {
 }
 
 static void timer_300ms_task(void) {
-    if (sync_timer_elapsed32(timer_300ms_buffer) > 300) {
+    if (timer_elapsed32(timer_300ms_buffer) > 300) {
         if (factory_reset_count++ > 6) {
             timer_300ms_buffer  = 0;
             factory_reset_count = 0;
@@ -191,7 +202,7 @@ static void timer_300ms_task(void) {
             rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
 #endif
         } else {
-            timer_300ms_buffer = sync_timer_read32() == 0 ? 1 : sync_timer_read32();
+            timer_300ms_buffer = timer_read32();
         }
     }
 }
