@@ -1,20 +1,20 @@
-# Lemokey X3
+# Lemokey X4
 
-![Lemokey X3]()
+![Lemokey X4]()
 
-A customizable 80% TKL keyboard.
+A customizable 75% keyboard.
 
 * Keyboard Maintainer: [Keychron](https://github.com/keychron)
-* Hardware Supported: Lemokey X3
+* Hardware Supported: Lemokey X4
 * Hardware Availability: [Keychron](https://www.keychron.com)
 
 Make example for this keyboard (after setting up your build environment):
 
-    make keychron/x3/ansi/red:default
+    make keychron/x4/ansi/red:default
 
 Flashing example for this keyboard:
 
-    make keychron/x3/ansi/red:default:flash
+    make keychron/x4/ansi/red:default:flash
 
 ## bootloader
 
