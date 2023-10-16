@@ -16,6 +16,8 @@
 
 #include "quantum.h"
 
+static uint8_t win_lock_state = 0;
+
 void eeconfig_init_kb(void) {
 #if (EECONFIG_KB_DATA_SIZE) == 0
     // Reset Keyboard EEPROM value to blank, rather than to a set value
@@ -25,5 +27,63 @@ void eeconfig_init_kb(void) {
     keymap_config.nkro = 1;
     eeconfig_update_keymap(keymap_config.raw);
 
+    win_lock_state = 0;
+    eeconfig_update_user_datablock(&win_lock_state);
+
     eeconfig_init_user();
+}
+
+void keyboard_post_init_kb(void) {
+    eeconfig_read_user_datablock(&win_lock_state);
+
+    keyboard_post_init_user();
+}
+
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_user(keycode, record)) {
+        return false;
+    }
+    switch (keycode) {
+#ifdef LED_MATRIX_ENABLE
+        case BL_TOGG:
+            if (record->event.pressed) {
+                switch (led_matrix_get_flags()) {
+                    case LED_FLAG_ALL: {
+                        led_matrix_set_flags(LED_FLAG_NONE);
+                        led_matrix_set_value_all(0);
+                    } break;
+                    default: {
+                        led_matrix_set_flags(LED_FLAG_ALL);
+                    } break;
+                }
+            }
+            if (!led_matrix_is_enabled()) {
+                led_matrix_set_flags(LED_FLAG_ALL);
+                led_matrix_enable();
+            }
+            return false;
+#endif
+        case GU_TOGG:
+            if (record->event.pressed) {
+                win_lock_state = !win_lock_state;
+                eeconfig_update_user_datablock(&win_lock_state);
+            }
+            return true;
+        default:
+            return true;
+    }
+}
+
+bool led_matrix_indicators_kb(void) {
+    if (!led_matrix_indicators_user()) {
+        return false;
+    }
+    if (win_lock_state) {
+        led_matrix_set_value(LED_WIN_LOCK_INDEX, 0xFF);
+    } else {
+        if (!led_matrix_get_flags()) {
+            led_matrix_set_value(LED_WIN_LOCK_INDEX, 0);
+        }
+    }
+    return true;
 }

@@ -59,6 +59,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,  _______,  _______),
 };
 
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [WIN_BASE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
+    [WIN_FN] = { ENCODER_CCW_CW(BL_DOWN, BL_UP)},
+    [WIN_L2] = { ENCODER_CCW_CW(_______, _______)},
+    [WIN_L3] = { ENCODER_CCW_CW(_______, _______)}
+};
+#endif // ENCODER_MAP_ENABLE
+
 // clang-format on
 
 void housekeeping_task_user(void) {

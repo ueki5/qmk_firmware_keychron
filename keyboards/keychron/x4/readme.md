@@ -10,11 +10,11 @@ A customizable 75% keyboard.
 
 Make example for this keyboard (after setting up your build environment):
 
-    make keychron/x4/ansi/red:default
+    make keychron/x4/ansi_encoder/red:default
 
 Flashing example for this keyboard:
 
-    make keychron/x4/ansi/red:default:flash
+    make keychron/x4/ansi_encoder/red:default:flash
 
 ## bootloader
 
