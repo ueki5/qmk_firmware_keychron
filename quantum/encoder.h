@@ -31,7 +31,7 @@ void encoder_interrupt_read(uint8_t index);
 
 #ifdef SPLIT_KEYBOARD
 
-    void encoder_state_raw(uint8_t* slave_state);
+void encoder_state_raw(uint8_t* slave_state);
 void encoder_update_raw(uint8_t* slave_state);
 
 #    if defined(ENCODERS_PAD_A_RIGHT)
