@@ -1,4 +1,4 @@
-/* Copyright 2023 @ Keychron(https://www.keychron.com)
+/* Copyright 2023 @ Keychron (https://www.keychron.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,22 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "quantum.h"
 
-/* I2C Driver Configuration */
-#define I2C1_CLOCK_SPEED 400000
-#define I2C1_DUTY_CYCLE FAST_DUTY_CYCLE_2
+void eeconfig_init_kb(void) {
+#if (EECONFIG_KB_DATA_SIZE) == 0
+    // Reset Keyboard EEPROM value to blank, rather than to a set value
+    eeconfig_update_kb(0);
+#endif
+    keymap_config.raw  = eeconfig_read_keymap();
+    keymap_config.nkro = 1;
+    eeconfig_update_keymap(keymap_config.raw);
 
-/* EEPROM Driver Configuration */
-#define WEAR_LEVELING_LOGICAL_SIZE 2048
-#define WEAR_LEVELING_BACKING_SIZE (WEAR_LEVELING_LOGICAL_SIZE * 2)
-
-/* Winlock indicator */
-#define LED_WIN_LOCK_PIN C10
-#define LED_PIN_ON_STATE 1
-
-/* User used eeprom */
-#define EECONFIG_USER_DATA_SIZE 1
-
-/* Factory test keys */
-#define FN_KEY1 MO(1)
+    eeconfig_init_user();
+}

@@ -1,4 +1,4 @@
-/* Copyright 2023 @ Keychron(https://www.keychron.com)
+/* Copyright 2020 QMK
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,19 @@
 
 #pragma once
 
-/* I2C Driver Configuration */
-#define I2C1_CLOCK_SPEED 400000
-#define I2C1_DUTY_CYCLE FAST_DUTY_CYCLE_2
+#include_next <mcuconf.h>
 
-/* EEPROM Driver Configuration */
-#define WEAR_LEVELING_LOGICAL_SIZE 2048
-#define WEAR_LEVELING_BACKING_SIZE (WEAR_LEVELING_LOGICAL_SIZE * 2)
+#undef STM32_HSECLK
+#define STM32_HSECLK 16000000U
 
-/* Winlock indicator */
-#define LED_WIN_LOCK_PIN C10
-#define LED_PIN_ON_STATE 1
+#undef STM32_PLLM_VALUE
+#define STM32_PLLM_VALUE 8
+#undef STM32_PLLN_VALUE
+#define STM32_PLLN_VALUE 168
+#undef STM32_PLLP_VALUE
+#define STM32_PLLP_VALUE 4
+#undef STM32_PLLQ_VALUE
+#define STM32_PLLQ_VALUE 7
 
-/* User used eeprom */
-#define EECONFIG_USER_DATA_SIZE 1
-
-/* Factory test keys */
-#define FN_KEY1 MO(1)
+#undef STM32_I2C_USE_I2C1
+#define STM32_I2C_USE_I2C1 TRUE
