@@ -44,13 +44,6 @@ void eeconfig_init_kb(void) {
     eeconfig_init_user();
 }
 
-void keyboard_post_init_kb(void) {
-    setPinOutputPushPull(LED_WIN_LOCK_PIN);
-    eeconfig_read_user_datablock(&win_lock_state);
-
-    keyboard_post_init_user();
-}
-
 void housekeeping_task_kb() {
     set_led_win_lock_state();
 }
@@ -64,11 +57,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 win_lock_state = !win_lock_state;
                 eeconfig_update_user_datablock(&win_lock_state);
-                if (win_lock_state) {
-                    SET_LED_WIN_LOCK_ON;
-                } else {
-                    SET_LED_WIN_LOCK_OFF;
-                }
             }
             return true;
         default:

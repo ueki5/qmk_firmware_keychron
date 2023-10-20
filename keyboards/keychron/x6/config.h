@@ -17,6 +17,8 @@
 #pragma once
 
 /* I2C Driver Configuration */
+#define I2C1_SCL_PIN B8
+#define I2C1_SDA_PIN B9
 #define I2C1_CLOCK_SPEED 400000
 #define I2C1_DUTY_CYCLE FAST_DUTY_CYCLE_2
 
@@ -25,8 +27,8 @@
 #define WEAR_LEVELING_BACKING_SIZE (WEAR_LEVELING_LOGICAL_SIZE * 2)
 
 /* Winlock indicator */
-#define LED_WIN_LOCK_PIN C10
-#define LED_WIN_LOCK_PIN_ON_STATE 1
+#define LED_WIN_LOCK_PIN A5
+#define LED_PIN_ON_STATE 1
 
 /* User used eeprom */
 #define EECONFIG_USER_DATA_SIZE 1
