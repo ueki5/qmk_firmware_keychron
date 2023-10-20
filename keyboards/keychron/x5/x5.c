@@ -44,6 +44,13 @@ void eeconfig_init_kb(void) {
     eeconfig_init_user();
 }
 
+void keyboard_post_init_kb(void) {
+    setPinOutputPushPull(LED_WIN_LOCK_PIN);
+    eeconfig_read_user_datablock(&win_lock_state);
+
+    keyboard_post_init_user();
+}
+
 void housekeeping_task_kb() {
     set_led_win_lock_state();
 }

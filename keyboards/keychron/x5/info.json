@@ -15,8 +15,6 @@
     "diode_direction": "ROW2COL",
     "indicators": {
         "caps_lock": "B14",
-        "num_lock": "B13",
-        "scroll_lock": "B12",
         "on_state": 0
     },
     "features": {

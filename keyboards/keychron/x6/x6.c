@@ -18,8 +18,8 @@
 
 static uint8_t win_lock_state = 0;
 
-#define SET_LED_WIN_LOCK_ON writePin(LED_WIN_LOCK_PIN, LED_PIN_ON_STATE)
-#define SET_LED_WIN_LOCK_OFF writePin(LED_WIN_LOCK_PIN, !LED_PIN_ON_STATE)
+#define SET_LED_WIN_LOCK_ON writePin(LED_WIN_LOCK_PIN, LED_WIN_LOCK_PIN_ON_STATE)
+#define SET_LED_WIN_LOCK_OFF writePin(LED_WIN_LOCK_PIN, !LED_WIN_LOCK_PIN_ON_STATE)
 
 static void set_led_win_lock_state(void) {
     if (win_lock_state) {
@@ -65,9 +65,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 win_lock_state = !win_lock_state;
                 eeconfig_update_user_datablock(&win_lock_state);
                 if (win_lock_state) {
-                    writePin(LED_WIN_LOCK_PIN, LED_PIN_ON_STATE);
+                    writePin(LED_WIN_LOCK_PIN, LED_WIN_LOCK_PIN_ON_STATE);
                 } else {
-                    writePin(LED_WIN_LOCK_PIN, !LED_PIN_ON_STATE);
+                    writePin(LED_WIN_LOCK_PIN, !LED_WIN_LOCK_PIN_ON_STATE);
                 }
             }
             return true;
