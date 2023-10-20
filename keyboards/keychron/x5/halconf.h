@@ -1,4 +1,4 @@
-/* Copyright 2023 @ Keychron(https://www.keychron.com)
+/* Copyright 2020 QMK
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,9 @@
 
 #pragma once
 
-/* I2C Driver Configuration */
-#define I2C1_CLOCK_SPEED 400000
-#define I2C1_DUTY_CYCLE FAST_DUTY_CYCLE_2
+#define HAL_USE_I2C TRUE
+#ifdef ENCODER_ENABLE
+#    define PAL_USE_CALLBACKS TRUE
+#endif
 
-/* EEPROM Driver Configuration */
-#define WEAR_LEVELING_LOGICAL_SIZE 2048
-#define WEAR_LEVELING_BACKING_SIZE (WEAR_LEVELING_LOGICAL_SIZE * 2)
-
-/* User used eeprom */
-#define EECONFIG_USER_DATA_SIZE 1
-
-/* Factory test keys */
-#define FN_KEY1 MO(1)
+#include_next <halconf.h>

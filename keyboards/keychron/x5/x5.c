@@ -64,11 +64,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 win_lock_state = !win_lock_state;
                 eeconfig_update_user_datablock(&win_lock_state);
-                if (win_lock_state) {
-                    SET_LED_WIN_LOCK_ON;
-                } else {
-                    SET_LED_WIN_LOCK_OFF;
-                }
             }
             return true;
         default:

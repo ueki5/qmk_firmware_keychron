@@ -17,6 +17,8 @@
 #pragma once
 
 /* I2C Driver Configuration */
+#define I2C1_SCL_PIN B8
+#define I2C1_SDA_PIN B9
 #define I2C1_CLOCK_SPEED 400000
 #define I2C1_DUTY_CYCLE FAST_DUTY_CYCLE_2
 
@@ -28,4 +30,5 @@
 #define EECONFIG_USER_DATA_SIZE 1
 
 /* Factory test keys */
+#define F_RESET_KEY1 KC_6
 #define FN_KEY1 MO(1)

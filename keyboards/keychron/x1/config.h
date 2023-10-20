@@ -26,11 +26,10 @@
 
 /* Winlock indicator */
 #define LED_WIN_LOCK_PIN C10
-#define LED_PIN_ON_STATE 1
+#define LED_WIN_LOCK_PIN_ON_STATE 1
 
 /* User used eeprom */
 #define EECONFIG_USER_DATA_SIZE 1
 
 /* Factory test keys */
 #define FN_KEY1 MO(1)
-#define FN_KEY2 MO(3)
