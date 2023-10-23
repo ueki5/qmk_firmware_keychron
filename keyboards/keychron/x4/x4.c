@@ -85,5 +85,12 @@ bool led_matrix_indicators_kb(void) {
             led_matrix_set_value(LED_WIN_LOCK_INDEX, 0);
         }
     }
+#if defined(LED_CAPS_LOCK_INDEX)
+    if (host_keyboard_led_state().caps_lock) {
+#    if defined(DIM_CAPS_LOCK)
+        led_matrix_set_value(LED_CAPS_LOCK_INDEX, 0);
+#    endif
+#endif
+    }
     return true;
 }

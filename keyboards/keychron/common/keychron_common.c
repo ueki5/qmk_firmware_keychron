@@ -111,3 +111,7 @@ __attribute__((weak)) void keyboard_post_init_kb(void) {
     }
 }
 #endif
+
+void restart_usb_driver(USBDriver *usbp) {
+    // Do nothing. Restarting the USB driver on these boards breaks it.
+}

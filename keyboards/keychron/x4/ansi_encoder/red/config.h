@@ -25,6 +25,8 @@
 #    define LED_MATRIX_LED_COUNT 81
 
 /* Winlock indicator */
+#    define LED_CAPS_LOCK_INDEX 44
+#    define DIM_CAPS_LOCK
 #    define LED_WIN_LOCK_INDEX 72
 
 /* Scan phase of led driver set as MSKPHASE_6CHANNEL(defined as 0x03 in CKLED2001.h) */
@@ -46,4 +48,5 @@
 /* Encoder Configuration*/
 #ifdef ENCODER_ENABLE
 #    define ENCODER_DEFAULT_POS 0x3
+#    define ENCODER_MAP_KEY_DELAY 2
 #endif
