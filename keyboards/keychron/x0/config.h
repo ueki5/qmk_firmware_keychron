@@ -30,5 +30,5 @@
 #define EECONFIG_USER_DATA_SIZE 1
 
 /* Factory test keys */
-#define F_RESET_KEY1 KC_6
+#define F_RESET_KEY1 KC_X
 #define FN_KEY1 MO(1)

@@ -36,8 +36,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL,            KC_LALT,  MO(WIN_FN), MO(WIN_FN),  KC_SPC),
 
     [WIN_FN] = LAYOUT(
-        _______,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_FLXP,  _______,
-        _______,  _______,  _______,  _______,  _______,  _______,  _______,
+        _______,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_PSCR,  KC_CRTA,
+        _______,  KC_7,     KC_8,     KC_9,     KC_0,     _______,  _______,
         BL_TOGG,  BL_STEP,  BL_UP,    _______,  _______,  _______,
         _______,  _______,  BL_DOWN,  _______,  _______,  _______,
         _______,            _______,  _______,  _______,  NK_TOGG,
