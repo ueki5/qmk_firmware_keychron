@@ -14,8 +14,7 @@
     },
     "diode_direction": "ROW2COL",
     "indicators": {
-        "caps_lock": "B14",
-        "on_state": 0
+        "caps_lock": "B14"
     },
     "features": {
         "bootmagic": true,
