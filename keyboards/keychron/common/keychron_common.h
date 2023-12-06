@@ -14,15 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
-#include <stdint.h>
-#include <stdbool.h>
-#include "action.h"
+#include "quantum.h"
 
 #ifdef VIA_ENABLE
 #    include "via.h"
 #endif
+
+#define KC_MICT QK_KB_0
+#define KC_LAPA QK_KB_1
 
 #include "quantum_keycodes.h"
 
@@ -35,13 +34,17 @@ enum custom_keycodes {
     KC_TASK_VIEW,
     KC_FILE_EXPLORER,
     KC_SCREEN_SHOT,
-    KC_CORTANA
+    KC_CORTANA,
+    KC_WIN_LOCK_SCREEN,
+    KC_MAC_LOCK_SCREEN
 };
 
 #define KC_TASK KC_TASK_VIEW
 #define KC_FLXP KC_FILE_EXPLORER
 #define KC_SNAP KC_SCREEN_SHOT
 #define KC_CRTA KC_CORTANA
+#define KC_WLCK KC_WIN_LOCK_SCREEN
+#define KC_MLCK KC_MAC_LOCK_SCREEN  
 
 typedef struct PACKED {
     uint8_t len;
