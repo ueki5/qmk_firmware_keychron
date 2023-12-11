@@ -151,13 +151,20 @@ void dynamic_keymap_set_encoder(uint8_t layer, uint8_t encoder_id, bool clockwis
 #endif // ENCODER_MAP_ENABLE
 
 void dynamic_keymap_reset(void) {
+	uint16_t  MATRIX_ROWS_temp[MATRIX_ROWS][MATRIX_COLS];	
+	uint16_t  keycode_temp;
+	
     // Reset the keymaps in EEPROM to what is in flash.
-    for (int layer = 0; layer < DYNAMIC_KEYMAP_LAYER_COUNT; layer++) {
+    for (int layer = 0; layer < DYNAMIC_KEYMAP_LAYER_COUNT; layer++) {	
         for (int row = 0; row < MATRIX_ROWS; row++) {
             for (int column = 0; column < MATRIX_COLS; column++) {
-                dynamic_keymap_set_keycode(layer, row, column, keycode_at_keymap_location_raw(layer, row, column));
-            }
+                //dynamic_keymap_set_keycode(layer, row, column, keycode_at_keymap_location_raw(layer, row, column));
+                keycode_temp=keycode_at_keymap_location_raw(layer, row, column);
+				MATRIX_ROWS_temp[row][column]=((keycode_temp&0XFF)<<8)|((keycode_temp>>8)&0XFF);
+            }			
         }
+		eeprom_update_block(MATRIX_ROWS_temp,dynamic_keymap_key_to_eeprom_address(layer, 0, 0),sizeof(MATRIX_ROWS_temp));
+
 #ifdef ENCODER_MAP_ENABLE
         for (int encoder = 0; encoder < NUM_ENCODERS; encoder++) {
             dynamic_keymap_set_encoder(layer, encoder, true, keycode_at_encodermap_location_raw(layer, encoder, true));

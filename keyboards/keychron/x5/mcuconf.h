@@ -30,7 +30,7 @@
 #undef STM32_PLLQ_VALUE
 #define STM32_PLLQ_VALUE 7
 
-
+/*
 #undef WB32_PLLDIV_VALUE
 #define WB32_PLLDIV_VALUE 2
 
@@ -39,6 +39,6 @@
 
 #undef WB32_USBPRE
 #define WB32_USBPRE WB32_USBPRE_DIV2
-
+*/
 #undef WB32_I2C_USE_I2C1
 #define WB32_I2C_USE_I2C1 TRUE
