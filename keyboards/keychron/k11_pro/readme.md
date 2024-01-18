@@ -10,13 +10,13 @@ A customizable 65% and ergonomic keyboard.
 
 Make example for this keyboard (after setting up your build environment):
 
-    make keychron/k11_pro/ansi:default
-    make keychron/k11_pro/ansi_encoder:default
+    make keychron/k11_pro/ansi_encoder/rgb:default
+    make keychron/k11_pro/ansi_encoder/white:default
 
 Flashing example for this keyboard ([after setting up the bootloadHID flashing environment](https://docs.qmk.fm/#/flashing_bootloadhid))
 
-    make keychron/k11_pro/ansi:default:flash
-    make keychron/k11_pro/ansi_encoder:default:flash
+    make keychron/k11_pro/ansi_encoder/rgb:default:flash
+    make keychron/k11_pro/ansi_encoder/white:default:flash
 
 **Reset Key**: Hold down the key located at *K00*, commonly programmed as *Esc* while plugging in the keyboard.
 
