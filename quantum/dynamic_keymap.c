@@ -111,11 +111,15 @@ void *dynamic_keymap_key_to_eeprom_address(uint8_t layer, uint8_t row, uint8_t c
 }
 
 uint16_t dynamic_keymap_get_keycode(uint8_t layer, uint8_t row, uint8_t column) {
+	uint16_t  keycode_temp;
+
     if (layer >= DYNAMIC_KEYMAP_LAYER_COUNT || row >= MATRIX_ROWS || column >= MATRIX_COLS) return KC_NO;
     void *address = dynamic_keymap_key_to_eeprom_address(layer, row, column);
     // Big endian, so we can read/write EEPROM directly from host if we want
-    uint16_t keycode = eeprom_read_byte(address) << 8;
-    keycode |= eeprom_read_byte(address + 1);
+    /*uint16_t keycode = eeprom_read_byte(address) << 8;
+    keycode |= eeprom_read_byte(address + 1);*/
+    keycode_temp=eeprom_read_word(address);
+	uint16_t keycode=((keycode_temp&0XFF)<<8)|((keycode_temp>>8)&0XFF);
     return keycode;
 }
 
