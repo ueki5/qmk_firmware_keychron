@@ -14,7 +14,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include QMK_KEYBOARD_H
+
 #include "keychron_common.h"
+#include "raw_hid.h"
+#include "version.h"
+
+#define PROTOCOL_VERSION 0x02
+
+enum {
+    kc_get_protocol_version = 0xA0,
+    kc_get_firmware_version = 0xA1,
+    kc_get_support_feature  = 0xA2,
+    kc_get_default_layer    = 0xA3,
+};
+
+enum {
+    FEATURE_DEFAULT_LAYER = 0x01 << 0,
+};
 
 bool     is_siri_active = false;
 uint32_t siri_timer     = 0;
@@ -112,6 +129,72 @@ __attribute__((weak)) void keyboard_post_init_kb(void) {
 }
 #endif
 
+#ifdef PROTOCOL_CHIBIOS
 void restart_usb_driver(USBDriver *usbp) {
     // Do nothing. Restarting the USB driver on these boards breaks it.
 }
+#endif
+
+#ifdef RAW_ENABLE
+#    ifdef FACTORY_TEST_ENABLE
+__attribute__((weak)) bool factory_test_rx(uint8_t *data, uint8_t length) {
+    return false;
+}
+#    endif
+
+void get_support_feature(uint8_t *data) {
+    data[1] = FEATURE_DEFAULT_LAYER;
+}
+
+bool via_command_kb(uint8_t *data, uint8_t length) {
+    // if (!raw_hid_receive_keychron(data, length))
+    //     return false;
+    switch (data[0]) {
+        case kc_get_protocol_version:
+            data[1] = PROTOCOL_VERSION;
+            raw_hid_send(data, length);
+            break;
+
+        case kc_get_firmware_version: {
+            uint8_t i = 1;
+            data[i++] = 'v';
+            if ((DEVICE_VER & 0xF000) != 0) itoa((DEVICE_VER >> 12), (char *)&data[i++], 16);
+            itoa((DEVICE_VER >> 8) & 0xF, (char *)&data[i++], 16);
+            data[i++] = '.';
+            itoa((DEVICE_VER >> 4) & 0xF, (char *)&data[i++], 16);
+            data[i++] = '.';
+            itoa((DEVICE_VER >> 4) & 0xF, (char *)&data[i++], 16);
+            data[i++] = ' ';
+            memcpy(&data[i], QMK_BUILDDATE, sizeof(QMK_BUILDDATE));
+            i += sizeof(QMK_BUILDDATE);
+            raw_hid_send(data, length);
+        } break;
+
+        case kc_get_support_feature:
+            get_support_feature(&data[1]);
+            raw_hid_send(data, length);
+            break;
+
+        case kc_get_default_layer:
+            data[1] = get_highest_layer(default_layer_state);
+            raw_hid_send(data, length);
+            break;
+
+#    ifdef FACTORY_TEST_ENABLE
+        case 0xAB:
+            factory_test_rx(data, length);
+            break;
+#    endif
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+#    if !defined(VIA_ENABLE)
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+    via_command_kb(data, length);
+}
+#    endif
+#endif

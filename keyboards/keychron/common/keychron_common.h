@@ -49,3 +49,7 @@ typedef struct PACKED {
 
 void housekeeping_task_keychron(void);
 bool process_record_keychron(uint16_t keycode, keyrecord_t *record);
+
+#ifdef FACTORY_TEST_ENABLE
+bool factory_test_rx(uint8_t *data, uint8_t length);
+#endif

@@ -178,39 +178,36 @@ bool dip_switch_update_user(uint8_t index, bool active) {
     return true;
 }
 
-bool via_command_kb(uint8_t *data, uint8_t length) {
-    if (data[0] == 0xAB) {
-        uint16_t checksum = 0;
-        for (uint8_t i = 1; i < RAW_EPSIZE - 3; i++) {
-            checksum += data[i];
-        }
-        /* Verify checksum */
-        if ((checksum & 0xFF) != data[RAW_EPSIZE - 2] || checksum >> 8 != data[RAW_EPSIZE - 1]) {
-            return true;
-        }
-        switch (data[1]) {
-#if defined(DIP_SWITCH_ENABLE)
-            case FACTORY_TEST_CMD_OS_SWITCH:
-                report_os_sw_state = data[2];
-                if (report_os_sw_state) {
-                    dip_switch_read(true);
-                }
-                break;
-#endif
-            case FACTORY_TEST_CMD_JUMP_TO_BL:
-                if (matrix[0] & 0x1 && matrix[MATRIX_ROWS - 1] & (0x1 << (MATRIX_COLS - 1))) {
-                    if (memcmp(&data[2], "JumpToBootloader", strlen("JumpToBootloader")) == 0) bootloader_jump();
-                }
-                break;
-            case FACTORY_TEST_CMD_EEPROM_CLEAR:
-                if (matrix[0] & 0x1 && matrix[MATRIX_ROWS - 1] & (0x1 << (MATRIX_COLS - 1))) {
-                    if (data[2]) {
-                        factory_reset();
-                    }
-                }
-                break;
-        }
+bool factory_test_rx(uint8_t *data, uint8_t length) {
+    uint16_t checksum = 0;
+    for (uint8_t i = 1; i < RAW_EPSIZE - 3; i++) {
+        checksum += data[i];
+    }
+    /* Verify checksum */
+    if ((checksum & 0xFF) != data[RAW_EPSIZE - 2] || checksum >> 8 != data[RAW_EPSIZE - 1]) {
         return true;
     }
-    return false;
+    switch (data[1]) {
+#if defined(DIP_SWITCH_ENABLE)
+        case FACTORY_TEST_CMD_OS_SWITCH:
+            report_os_sw_state = data[2];
+            if (report_os_sw_state) {
+                dip_switch_read(true);
+            }
+            break;
+#endif
+        case FACTORY_TEST_CMD_JUMP_TO_BL:
+            if (matrix[0] & 0x1 && matrix[MATRIX_ROWS - 1] & (0x1 << (MATRIX_COLS - 1))) {
+                if (memcmp(&data[2], "JumpToBootloader", strlen("JumpToBootloader")) == 0) bootloader_jump();
+            }
+            break;
+        case FACTORY_TEST_CMD_EEPROM_CLEAR:
+            if (matrix[0] & 0x1 && matrix[MATRIX_ROWS - 1] & (0x1 << (MATRIX_COLS - 1))) {
+                if (data[2]) {
+                    factory_reset();
+                }
+            }
+            break;
+    }
+    return true;
 }

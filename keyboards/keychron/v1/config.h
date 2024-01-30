@@ -31,6 +31,18 @@
 /* DIP switch */
 #define DIP_SWITCH_MATRIX_GRID  { {5,4} }
 
+
+/* HC595 Driver Configuration */
+#define HC595_STCP B0
+#define HC595_SHCP B1
+#define HC595_DS A7
+#define HC595_START_INDEX 8
+#define HC595_END_INDEX 15
+
+/* Factory test keys */
+#define FN_KEY1 MO(1)
+#define FN_KEY2 MO(3)
+
 /* RGB Matrix Driver Configuration */
 #define DRIVER_COUNT 2
 #define DRIVER_ADDR_1 0b1110111

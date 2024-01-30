@@ -16,6 +16,7 @@
 
 #include "quantum.h"
 
+// clang-format off
 const matrix_row_t matrix_mask[] = {
     0b1111111111111111,
     0b1111111111111111,
@@ -24,6 +25,7 @@ const matrix_row_t matrix_mask[] = {
     0b1111111111111111,
     0b1111111111101111,
 };
+// clang-format on
 
 #ifdef DIP_SWITCH_ENABLE
 
@@ -42,11 +44,21 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
 #if defined(RGB_MATRIX_ENABLE) && defined(CAPS_LOCK_LED_INDEX)
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_user(keycode, record)) { return false; }
+    if (!process_record_user(keycode, record)) {
+        return false;
+    }
     switch (keycode) {
-#ifdef RGB_MATRIX_ENABLE
+#    ifdef RGB_MATRIX_ENABLE
         case RGB_TOG:
+            if (!rgb_matrix_is_enabled()) {
+                rgb_matrix_set_flags(LED_FLAG_ALL);
+                rgb_matrix_enable();
+            }
             if (record->event.pressed) {
+                if (rgb_matrix_get_val() == 0) {
+                    rgb_matrix_increase_val();
+                    if (rgb_matrix_get_flags() == LED_FLAG_ALL) return false;
+                }
                 switch (rgb_matrix_get_flags()) {
                     case LED_FLAG_ALL: {
                         rgb_matrix_set_flags(LED_FLAG_NONE);
@@ -57,25 +69,34 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                     } break;
                 }
             }
+            return false;
+
+        case RGB_VAI:
             if (!rgb_matrix_is_enabled()) {
                 rgb_matrix_set_flags(LED_FLAG_ALL);
                 rgb_matrix_enable();
             }
-            return false;
-#endif
+            if (rgb_matrix_get_flags() == LED_FLAG_NONE) {
+                rgb_matrix_set_flags(LED_FLAG_ALL);
+                return false;
+            }
+            break;
+#    endif
     }
     return true;
 }
 
 bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
-    if (!rgb_matrix_indicators_advanced_user(led_min, led_max)) { return false; }
+    if (!rgb_matrix_indicators_advanced_user(led_min, led_max)) {
+        return false;
+    }
     // RGB_MATRIX_INDICATOR_SET_COLOR(index, red, green, blue);
 
     if (host_keyboard_led_state().caps_lock) {
         RGB_MATRIX_INDICATOR_SET_COLOR(CAPS_LOCK_LED_INDEX, 255, 255, 255);
     } else {
         if (!rgb_matrix_get_flags()) {
-           RGB_MATRIX_INDICATOR_SET_COLOR(CAPS_LOCK_LED_INDEX, 0, 0, 0);
+            RGB_MATRIX_INDICATOR_SET_COLOR(CAPS_LOCK_LED_INDEX, 0, 0, 0);
         }
     }
     return true;
