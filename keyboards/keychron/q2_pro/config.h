@@ -50,7 +50,7 @@
             { 15, 16, 17 }
 
 #        define BAT_LEVEL_LED_LIST \
-            { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 }
+            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 /* Backlit disable timeout when keyboard is disconnected(unit: second) */
 #        define DISCONNECTED_BACKLIGHT_DISABLE_TIMEOUT 40
