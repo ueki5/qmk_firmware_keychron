@@ -56,3 +56,5 @@
 
 #endif
 #define DYNAMIC_KEYMAP_LAYER_COUNT 10
+#define PERMISSIVE_HOLD
+#define RETRO_TAPPING
